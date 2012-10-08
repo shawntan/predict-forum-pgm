@@ -29,8 +29,9 @@ class FileWrapper(object):
 
 def marked_open(*params):
 	global _open
-	print "Opening file..."
-	print config.filename_formats.date
+	#print params
+	if len(params) > 1 and (params[1] == 'w' or params[1] == 'wb' or params[1] == 'w+'):
+		print "Opening file..."
 	return _open(*params)
 
 _open = __builtin__.open

@@ -3,7 +3,7 @@ Predicting Forum Thread Posts
 
 Use of probabilistic graphical Models to predict forum posts in avsforum.com. Project for CS5340
 
-#Directory structure
+##Directory structure
 1. `working`: Stores working files for use later. e.g.
 	* pickled models to be used for evaluation
 
