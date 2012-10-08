@@ -14,3 +14,6 @@ Use of probabilistic graphical Models to predict forum posts in avsforum.com. Pr
 	* TSVs
 	* CSVs
 	* partial .tex files of tables
+
+##Preprocessing
+1. `learn_topics` topics learnt from data.
