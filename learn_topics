@@ -1,5 +1,5 @@
-#!/usr/bin/python2
-import algo.lda as lda
+#!/usr/bin/python
+from algo.lda import LDASampler
 from lib.io.reader import windowed,filter_tokenise
 import pickle
 import sys
@@ -10,74 +10,73 @@ window_size_max	= int(sys.argv[1])
 num_topics_max	= int(sys.argv[2])
 documents	= ["data/%s"%i.strip() for i in open(sys.argv[3])]
 output 		= sys.argv[-1]
+window_size	= 15
+
+print "Loading file"
+docs = [' '.join(w[2]) for w,_ in windowed(documents,window_size)]
+print "Tokenising documents."
+tokenised_docs = [filter_tokenise(i) for i in docs]
+for num_topics in range(2,num_topics_max):
+	print "Window size = %d, Topics = %d"%(window_size,num_topics)
+	lda = LDASampler(
+		docs=tokenised_docs,
+		num_topics=num_topics, 
+		alpha=0.25,
+		beta=0.25)
+
+	print 'Sampling...'
+	for _ in range(100):
+	#	zs = lda.assignments
+	#	print zs
+	#	print '[%i %i] [%i %i]' % (zs[0][3], zs[1][3], zs[2][3], zs[3][3])
+		lda.next()
+	print
+
+	print 'words ordered by probability for each topic:'
+	tks = lda.topic_keys()
+	for i, tk in enumerate(tks):
+		print '%3d'%i , tk[:10]
+		print '%3s'%'', tk[10:20]
+		print '%3s'%'', tk[20:30]
+	print
+
+	print 'document keys:'
+	dks = lda.doc_keys()
+	#print 'topic assigned to each word of first document in the final iteration:'
+
+	size = 20
+	time_differences = [dt for _,dt in windowed(documents,window_size)]
+	bin_list = []
+	for i in range(num_topics):
+		bins = defaultdict(float)
+		bin_list.append(bins)
+
+	for dt, doc, dk in zip(time_differences, docs, dks):
+		print '%5d'%dt + '\t'+\
+			  doc[:40] +"..." + '\t' +\
+			  str(dk)
+		for p,i in dk:
+			bin = int(float(dt)/size)
+			bin_list[i][bin] += p
 
 
-for window_size in range(5,window_size_max):
-	print "Loading file"
-	docs = [' '.join(w[2]) for w,_ in windowed(documents,window_size)]
-	print "Tokenising documents."
-	tokenised_docs = [filter_tokenise(i) for i in docs]
-	for num_topics in range(2,num_topics_max):
-		print "Window size = %d, Topics = %d"%(window_size,num_topics)
-		lda = lda.LDASampler(
-			docs=tokenised_docs,
-			num_topics=num_topics, 
-			alpha=0.25,
-			beta=0.25)
+	print lda.doc_distribution(lda.docs[0])
+	print lda.doc_distribution(lda.docs[1])
+	print lda.doc_distribution(lda.docs[2])
+	print lda.doc_distribution(lda.docs[3])
+	print lda.doc_distribution(lda.docs[-4])
+	print lda.doc_distribution(lda.docs[-3])
+	print lda.doc_distribution(lda.docs[-2])
+	print lda.doc_distribution(lda.docs[-1])
+	FILE = open("w%d_t%d_%s"%(window_size,num_topics,output),'wb')
+	pickle.dump(lda,FILE)
+	FILE.close()
+	#graphing.
+	"""
 
-		print 'Sampling...'
-		for _ in range(100):
-		#	zs = lda.assignments
-		#	print zs
-		#	print '[%i %i] [%i %i]' % (zs[0][3], zs[1][3], zs[2][3], zs[3][3])
-			lda.next()
-		print
-
-		print 'words ordered by probability for each topic:'
-		tks = lda.topic_keys()
-		for i, tk in enumerate(tks):
-			print '%3d'%i , tk[:10]
-			print '%3s'%'', tk[10:20]
-			print '%3s'%'', tk[20:30]
-		print
-
-		print 'document keys:'
-		dks = lda.doc_keys()
-		#print 'topic assigned to each word of first document in the final iteration:'
-
-		size = 20
-		time_differences = [dt for _,dt in windowed(documents,window_size)]
-		bin_list = []
-		for i in range(num_topics):
-			bins = defaultdict(float)
-			bin_list.append(bins)
-
-		for dt, doc, dk in zip(time_differences, docs, dks):
-			print '%5d'%dt + '\t'+\
-				  doc[:40] +"..." + '\t' +\
-				  str(dk)
-			for p,i in dk:
-				bin = int(float(dt)/size)
-				bin_list[i][bin] += p
-
-
-		print lda.doc_distribution(lda.docs[0])
-		print lda.doc_distribution(lda.docs[1])
-		print lda.doc_distribution(lda.docs[2])
-		print lda.doc_distribution(lda.docs[3])
-		print lda.doc_distribution(lda.docs[-4])
-		print lda.doc_distribution(lda.docs[-3])
-		print lda.doc_distribution(lda.docs[-2])
-		print lda.doc_distribution(lda.docs[-1])
-		FILE = open("w%d_t%d_%s"%(window_size,num_topics,output),'wb')
-		pickle.dump(lda,FILE)
-		FILE.close()
-		#graphing.
-		"""
-
-		for i in range(num_topics):
-			bins = defaultdict(float)
-			bin_list.append(bins)
-		#plot_hist(size,bin_list)
-		"""
+	for i in range(num_topics):
+		bins = defaultdict(float)
+		bin_list.append(bins)
+	#plot_hist(size,bin_list)
+	"""
 

@@ -33,8 +33,7 @@ class LDASampler(object):
 			self.W = len(self.vocab)
 
 			# mapping from words to integers
-			to_int = {word: w for (w, word) 
-					in enumerate(self.vocab)}
+			to_int = dict((word, w) for (w, word) in enumerate(self.vocab))
 
 			# count data for Gibbs sampling         
 			self.nt = np.zeros(self.T)#[0] * self.T

@@ -3,7 +3,7 @@ data
 working
 .*
 *~
-
+global_objs
 
 # Packages
 *.egg
