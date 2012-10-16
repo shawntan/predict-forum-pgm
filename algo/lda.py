@@ -193,7 +193,7 @@ class LDASampler(object):
 			try:
 				w = self.vocab.index(w)
 				# maximise over the topics to get highest probability
-				t = max(range(self.T),key=lambda x: self.pw_z(w,x))
+				t = max(range(self.T) , key=lambda x: self.pw_z(w,x) )
 				result[t] += 1
 			except Exception: pass
 		result = result/sum(result)

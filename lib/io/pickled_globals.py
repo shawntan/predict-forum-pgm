@@ -11,4 +11,4 @@ class pickled_globals(object):
 		self.__setattr__(attr_name,obj)
 		return obj
 
-pg = pickled_globals('working')
+pg = pickled_globals('global_objs')

@@ -17,3 +17,5 @@ Use of probabilistic graphical Models to predict forum posts in avsforum.com. Pr
 
 ##Preprocessing
 1. `learn_topics` topics learnt from data.
+2. `topic_time_dist` generates arrays of time histograms of topics.
+	We're looking for time distributions significantly different between topics.
