@@ -1,0 +1,9 @@
+#!/bin/python2
+
+import cPickle as pickle
+import lib.io.pickled_globals
+import lib.graphs as graphs
+
+for i in range(1,10):
+	hist = pickle.load(open('histograms/w%d_histograms'%(i+1),'rb'))
+	graphs.plot_hist(20,hist, upper = 50,directory='hist_%d_topics'%(i+1))
