@@ -16,7 +16,7 @@ print "Loading file"
 docs = [' '.join(w[2]) for w,_ in windowed(documents,window_size)]
 print "Tokenising documents."
 tokenised_docs = [filter_tokenise(i) for i in docs]
-for num_topics in range(2,num_topics_max):
+for num_topics in range(num_topics_max,num_topics_max+1):
 	print "Window size = %d, Topics = %d"%(window_size,num_topics)
 	lda = LDASampler(
 		docs=tokenised_docs,

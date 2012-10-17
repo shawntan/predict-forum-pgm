@@ -9,28 +9,18 @@ import cPickle as pickle
 documents	= ["data/%s"%i.strip() for i in open(sys.argv[1])]
 window_size = 15
 size		= 20
-splittings	= [
-	"w15_t2_learnt_topics",
-	"w15_t3_learnt_topics",
-	"w15_t4_learnt_topics",
-	"w15_t5_learnt_topics",
-	"w15_t6_learnt_topics",
-	"w15_t7_learnt_topics",
-	"w15_t8_learnt_topics",
-	"w15_t9_learnt_topics"
-	"w15_t10_learnt_topics"
-	]
+for num_topics in range(10,11):
 
-for i,num_topics in zip(splittings,range(2,11)):
 	docs = ((' '.join(w[2]),dt) for w,dt in windowed(documents,window_size))
+	topics_obj = getattr(pg,"w15_t%d_learnt_topics"%num_topics)
 
-	topics_obj = getattr(pg,i)
 	print "Unpickled topic model."
+	bin_list = [defaultdict(float) for _ in range(num_topics)]
 	for text,dt in docs:
-		bin_list = [defaultdict(float) for i in range(num_topics)]
 		topic_dist = topics_obj.doc_distribution(filter_tokenise(text))
 		for i,p in enumerate(topic_dist):
 			bin = int(float(dt)/size)
 			bin_list[i][bin] += p
-
-	pickle.dump(bin_list,open('w%d_histograms','wb'))
+	print "Dumping histogram"
+	pickle.dump(bin_list,open('w%d_histograms'%num_topics,'wb'))
+	print "Done."
