@@ -5,11 +5,11 @@ from collections import defaultdict
 import glob
 import sys
 import cPickle as pickle
-
+import numpy as np
 documents	= ["data/%s"%i.strip() for i in open(sys.argv[1])]
 window_size = 15
 size		= 20
-for num_topics in range(10,11):
+for num_topics in range(2,10):
 
 	docs = ((' '.join(w[2]),dt) for w,dt in windowed(documents,window_size))
 	topics_obj = getattr(pg,"w15_t%d_learnt_topics"%num_topics)
@@ -18,9 +18,12 @@ for num_topics in range(10,11):
 	bin_list = [defaultdict(float) for _ in range(num_topics)]
 	for text,dt in docs:
 		topic_dist = topics_obj.doc_distribution(filter_tokenise(text))
+		bin = int(float(dt)/size)
+		"""
 		for i,p in enumerate(topic_dist):
-			bin = int(float(dt)/size)
 			bin_list[i][bin] += p
+		"""
+		bin_list[np.argmax(topic_dist)][bin]+=1
 	print "Dumping histogram"
 	pickle.dump(bin_list,open('w%d_histograms'%num_topics,'wb'))
 	print "Done."
