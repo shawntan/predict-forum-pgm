@@ -14,5 +14,5 @@ for i in range(1,10):
 	print "Writing to files..."
 	for j, tk in enumerate(top_tok):
 		out = open('graphs/hist_%d_topics/%03d'%(i+1,j+1),'w')
-		out.write('\t'.join(tk[:30]) + '\n')
+		out.write('\t'.join(tk[:50]) + '\n')
 		out.close()
