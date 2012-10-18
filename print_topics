@@ -1,0 +1,18 @@
+#!/bin/python2
+
+import cPickle as pickle
+import lib.io.pickled_globals
+import lib.graphs as graphs
+
+
+
+for i in range(1,10):
+	print "Loading pickled topic model with %d topics ..."%(i+1)
+	lda		= pickle.load(open('global_objs/w15_t%d_learnt_topics'%(i+1),'rb'))
+	print "Retrieving topics..."
+	top_tok = lda.topic_keys()
+	print "Writing to files..."
+	for j, tk in enumerate(top_tok):
+		out = open('graphs/hist_%d_topics/%03d'%(i+1,j+1),'w')
+		out.write('\t'.join(tk[:30]) + '\n')
+		out.close()
