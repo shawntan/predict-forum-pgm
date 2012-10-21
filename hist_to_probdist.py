@@ -12,22 +12,30 @@ def main():
 	for i in range(1,10):
 		hist  = pickle.load(open('graphs/histograms/w%d_histograms'%(i+1),'rb'))
 		model = [] 
+		topic_dist = []
 		for topic_hist in hist:
 			total     = sum(topic_hist[i] for i in topic_hist)
 			prob_dist = defaultdict(float,((i,topic_hist[i]/float(total)) for i in topic_hist))
 			model.append(prob_dist)
+			topic_dist.append(total)
 			print prob_dist
+		
+		topic_dist = np.array(topic_dist)/float(sum(topic_dist))
+		pickle.dump(topic_dist,open('graphs/prob_dist/dist_t%03d_prior'%i,'wb'))
+
 		pickle.dump(model,open('graphs/prob_dist/dist_t%03d'%i,'wb'))
 
 
-def time_dist(topic_dist,model,limit = 24*3*2):
+def time_dist(topic_dist,prior,model,limit = 24*3*2):
 	t_dist = np.zeros(limit)
 	for i in range(limit):
-		t_dist[i] = sum(model[t][i] * topic_dist[t] for t in range(len(topic_dist)))
+		t_dist[i] = sum(
+				model[t][i] * topic_dist[t] * prior[t]
+				for t in range(len(topic_dist)))
 	t_dist = t_dist/sum(t_dist)
 	return t_dist
 if __name__ == '__main__':
-	#main()
+	main()
 	model = pickle.load(open('graphs/prob_dist/dist_t%03d'%9,'rb'))
 	#print model
 	print time_dist([0.1 for i in range(9)],model)
